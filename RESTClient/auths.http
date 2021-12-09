@@ -1,0 +1,11 @@
+######### NORMAL OPERATION  ###########
+
+### Login the defaults admins
+POST http://localhost:3000/auths/login
+Content-Type: application/json
+
+{
+    "email":"estelle.corquet@student.vinci.be",
+    "password":"admin"
+}
+

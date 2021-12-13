@@ -23,6 +23,7 @@ const defaultItems = [
     shadow_balance: 0,
     nbr_sale: 10,
     nbr_purchases: 1,
+    profil_picture: "user.jpg",
   },
   {
     id: 2,
@@ -35,6 +36,7 @@ const defaultItems = [
     shadow_balance: 0,
     nbr_sale: 20,
     nbr_purchases: 2,
+    profil_picture: "user.jpg",
   },
   {
     id: 3,
@@ -47,6 +49,7 @@ const defaultItems = [
     shadow_balance: 0,
     nbr_sale: 30,    
     nbr_purchases: 3,
+    profil_picture: "user.jpg",
   },
   {
     id: 4,
@@ -59,6 +62,7 @@ const defaultItems = [
     shadow_balance: 0,
     nbr_sale: 40,
     nbr_purchases: 4,
+    profil_picture: "user.jpg",
   },
 ];
 // hash default password
@@ -142,6 +146,7 @@ class Users {
       shadow_balance: 0,
       nbr_sale: 0,
       nbr_purchases: 0,
+      profil_picture: "user.jpg",
     };
     items.push(newitem);
     serialize(this.jsonDbPath, items);

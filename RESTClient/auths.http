@@ -9,3 +9,17 @@ Content-Type: application/json
     "password":"admin"
 }
 
+
+#signup(username, userlastname, password, email, address)
+### Signup a new user
+POST http://localhost:3000/auths/signup
+Content-Type: application/json
+
+{
+    "username": "Chaymae", 
+    "userlastname": "Hbat",
+    "password":"admin",     
+    "email":"chaymae.hbat@student.vinci.be",
+    "address":"zza"
+}
+

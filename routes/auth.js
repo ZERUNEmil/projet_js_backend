@@ -3,20 +3,20 @@ var router = express.Router();
 const { Users } = require("../model/users");
 const userModel = new Users();
 
-/* Register a user : POST /auths/register */
-router.post("/register", async function (req, res, next) {
+/* Signup a user : POST /auths/signup */
+router.post("/signup", async function (req, res, next) {
   // Send an error code '400 Bad request' if the body parameters are not valid
   if (
     !req.body ||
     (req.body.hasOwnProperty("username") && req.body.username.length === 0) ||
     (req.body.hasOwnProperty("userlastname") && req.body.userlastname.length === 0) ||
     (req.body.hasOwnProperty("password") && req.body.password.length === 0) ||
-    (req.body.hasOwnProperty("email") && req.body.email.length === 0) ||
-    (req.body.hasOwnProperty("address") ) 
+    (req.body.hasOwnProperty("email") && req.body.email.length === 0) 
+    //|| (req.body.hasOwnProperty("address")) 
   )
     return res.status(400).end();
 
-  const authenticatedUser = await userModel.register(
+  const authenticatedUser = await userModel.signup(
     req.body.username,
     req.body.userlastname,
     req.body.password,
@@ -32,6 +32,8 @@ router.post("/register", async function (req, res, next) {
 
   return res.json({ email: authenticatedUser.email });
 });
+
+
 
 /* login a user : POST /auths/login */
 router.post("/login", async function (req, res, next) {

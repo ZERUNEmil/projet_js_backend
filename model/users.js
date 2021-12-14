@@ -127,7 +127,6 @@ class Users {
    * @param {object} body - it contains all required data to create a item
    * @returns {Promise} Promise reprensents the item that was created (with id)
    */
-
   async addOne(body) {
     const items = parse(this.jsonDbPath, this.defaultItems);
 
@@ -136,7 +135,7 @@ class Users {
     // add new item to the menu
 
     const newitem = {
-      id: this.getNextId,
+      id: this.getNextId(),
       username: escape(body.username),
       userlastname: escape(body.userlastname),
       password: hashedPassword,
@@ -189,6 +188,9 @@ class Users {
     return updateditem;
   }
 
+
+
+
   /**
    * Authenticate a user and generate a token if the user credentials are OK
    * @param {*} email
@@ -220,6 +222,10 @@ class Users {
     return authenticatedUser;
   }
 
+
+
+
+  
   /**
    * Create a new user in DB and generate a token
    * @param {*} username
@@ -231,13 +237,14 @@ class Users {
    * be created (if email already in use)
    */
 
-  register(username, userlastname, password, email, address) {
+   signup(username, userlastname, password, email, address) {
     const userFound = this.getOneByEmail(email);
     if (userFound) return;
 
     const newUser = this.addOne({ username: username, userlastname: userlastname, password: password, 
     email : email, address: address});
 
+    
     const authenticatedUser = {
       email: email,
       token: "Future signed token",

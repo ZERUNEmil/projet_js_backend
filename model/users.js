@@ -23,22 +23,15 @@ class Users {
   constructor() {
   }
 
-  // getNextId() {
-  //   const items = parse(this.jsonDbPath, this.defaultItems);
-  //   let nextId;
-  //   if (items.length === 0) nextId = 1;
-  //   else nextId = items[items.length - 1].id + 1;
-
-  //   return nextId;
-  // }
-
   /**
    * Returns all items
    * @returns {Array} Array of items
    */
-  getAll() {
-    const items = parse(this.jsonDbPath, this.defaultItems);
-    return items;
+  async getAll(pool) {
+    const  { rows } = await pool.query('SELECT * FROM project.user');
+    if (! rows) return;
+    
+    return rows;
   }
 
   /**
@@ -46,12 +39,11 @@ class Users {
    * @param {number} id - id of the item to find
    * @returns {object} the item found or undefined if the id does not lead to a item
    */
-  getOne(id) {
-    const items = parse(this.jsonDbPath, this.defaultItems);
-    const foundIndex = items.findIndex((item) => item.id == id);
-    if (foundIndex < 0) return;
-
-    return items[foundIndex];
+  async getOne(id, pool) {
+    const  { rows } = await pool.query('SELECT * FROM project.user WHERE id_user = $1', [id]);
+    if (! rows) return;
+    
+    return rows[0];
   }
 
   /**
@@ -71,7 +63,7 @@ class Users {
    * @param {object} body - it contains all required data to create a item
    * @returns {Promise} Promise reprensents the item that was created (with id)
    */
-  async addOne(body) {
+  async addOne(body, pool) {
     const items = parse(this.jsonDbPath, this.defaultItems);
 
     // hash the password (async call)
@@ -101,14 +93,11 @@ class Users {
    * @param {number} id - id of the item to be deleted
    * @returns {object} the item that was deleted or undefined if the delete operation failed
    */
-  deleteOne(id) {
-    const items = parse(this.jsonDbPath, this.defaultItems);
-    const foundIndex = items.findIndex((item) => item.id == id);
-    if (foundIndex < 0) return;
-    const itemRemoved = items.splice(foundIndex, 1);
-    serialize(this.jsonDbPath, items);
-
-    return itemRemoved[0];
+  async DeleteOne(id, pool) {
+    const  { rows } = await pool.query('DELETE FROM project.user WHERE id_user = $1', [id]);
+    if (! rows) return;
+    
+    return rows[0];
   }
 
   /**
@@ -165,8 +154,6 @@ class Users {
       jwtSecret, // secret used for the signature
       { expiresIn: LIFETIME_JWT } // lifetime of the JWT
     );
-
-    console.log(authenticatedUser);
 
     authenticatedUser.token = token;
     return authenticatedUser;

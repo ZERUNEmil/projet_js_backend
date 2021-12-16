@@ -18,15 +18,14 @@ router.get('/:email', async function(req, res){
 
   const user = await userModel.getOneByEmail(req.params.email, req.app.pool);
 
-  if (!user) return res.status(401).end();
 
-  return res.json({username: user.username,
-      userlastname: user.userlastname,
+  return res.json({firstname: user.firstname,
+      lastname: user.lastname,
       adress: user.adress,
-      actual_balance: user.actual_balance,
+      effective_balance: user.effective_balance,
       shadow_balance: user.shadow_balance,
-      nbr_sale: user.nbr_sale,
-      nbr_purchases: user.nbr_purchases,
+      sales_number: user.sales_number,
+      purchases_number: user.purchases_number,
       profil_picture: user.profil_picture});
 });
 

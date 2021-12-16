@@ -9,6 +9,14 @@ Content-Type: application/json
     "password":"admin"
 }
 
+### Login to localHost
+POST http://localhost:3000/auths/login
+Content-Type: application/json
+
+{
+    "email":"estelle.croquet@student.vinci.be",
+    "password":"admin"
+}
 
 #signup(username, userlastname, password, email, address)
 ### Signup a new user

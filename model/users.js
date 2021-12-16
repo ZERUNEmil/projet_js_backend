@@ -60,7 +60,7 @@ class Users {
    * @returns {object} the item found or undefined if the email does not lead to a item
    */
   async getOneByEmail(email, pool) {
-    const  { rows } = await pool.query('SELECT * FROM project.user WHERE email = ', [email]);
+    const  { rows } = await pool.query('SELECT * FROM project.user WHERE email = $1', [email]);
     if (! rows) return;
     
     return rows[0];

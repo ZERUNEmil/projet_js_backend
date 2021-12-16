@@ -59,12 +59,11 @@ class Users {
    * @param {string} email - email of the item to find
    * @returns {object} the item found or undefined if the email does not lead to a item
    */
-  getOneByEmail(email) {
-    const items = parse(this.jsonDbPath, this.defaultItems);
-    const foundIndex = items.findIndex((item) => item.email == email);
-    if (foundIndex < 0) return;
-
-    return items[foundIndex];
+  getOneByEmail(email, pool) {
+    const  { rows } = await pool.query('SELECT * FROM project.user WHERE email = ', [email]);
+    if (! rows) return;
+    
+    return rows[0];
   }
 
   /**
@@ -145,14 +144,14 @@ class Users {
    */
 
   async login(email, password, pool) {
-    const  { rows } = await pool.query('SELECT * FROM project.user WHERE email = $1', [email]);
+    const  { rows } = await pool.query('SELECT * FROM project.user WHERE email = ', [email]);
     const userFound = rows[0];
 
     if (!userFound) return;
+
     // checked hash of passwords
-    console.log("test");
     const match = await bcrypt.compare(password, userFound.password);
-    console.log(match);
+
     if (!match) return;
 
     const authenticatedUser = {

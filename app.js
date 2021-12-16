@@ -34,6 +34,9 @@ app.pool = new Pool({
   }
 });
 
+console.log(app.pool);
+console.log(process.env.USERNAME);
+
 app.pool.connect();
 
 app.use(logger('dev'));

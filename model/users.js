@@ -3,6 +3,7 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require('bcrypt');
 const { parse, serialize } = require("../utils/json");
+const res = require("express/lib/response");
 //var escape = require("escape-html");
 const jwtSecret = "lux";
 const LIFETIME_JWT = 24 * 60 * 60 * 1000; // in ms : 24 * 60 * 60 * 1000 = 24h
@@ -106,23 +107,17 @@ class Users {
    * @param {object} body - it contains all the data to be updated
    * @returns {object} the updated item or undefined if the update operation failed
    */
-  updateOne(id, body) {
-    const items = parse(this.jsonDbPath, this.defaultItems);
-    const foundIndex = items.findIndex((item) => item.id == id);
-    if (foundIndex < 0) return;
-    // create a new object based on the existing item - prior to modification -
-    // and the properties requested to be updated (those in the body of the request)
-    // use of the spread operator to create a shallow copy and repl
-    const updateditem = { ...items[foundIndex], ...body };
-    // replace the item found at index : (or use splice)
-    items[foundIndex] = updateditem;
+  async updateProfil(email, body, pool) {
+    try {
+      const { rows } = await pool.query('UPDATE project.user SET email = $1, firstname = $2, lastname = $3 WHERE email = $4 RETURNING *', [body.email, body.firstname, body.lastname, email]);
 
-    serialize(this.jsonDbPath, items);
-    return updateditem;
+      if (! rows[0]) return;
+
+      return rows[0];
+    } catch (error){
+      throw new Error(error);
+    }
   }
-
-
-
 
   /**
    * Authenticate a user and generate a token if the user credentials are OK
@@ -159,10 +154,6 @@ class Users {
     return authenticatedUser;
   }
 
-
-
-
-  
   /**
    * Create a new user in DB and generate a token
    * @param {*} username

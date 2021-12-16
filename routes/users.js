@@ -16,7 +16,7 @@ router.get('/:email', async function(req, res){
   )
     return res.status(400).end();
 
-  const user = await userModel.getOneByEmail(req.params.email);
+  const user = await userModel.getOneByEmail(req.params.email, req.app.pool);
 
   if (!user) return res.status(401).end();
 

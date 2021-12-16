@@ -2,6 +2,8 @@ var express = require('express');
 var logger = require('morgan');
 var cookieSession = require('cookie-session');
 
+require("dotenv").config();
+
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var authsRouter = require('./routes/auth');
@@ -22,11 +24,11 @@ app.use(
 )
 
 app.pool = new Pool({
-  user: 'tvfnuvevgtmeyb',
-  host: 'ec2-52-19-164-214.eu-west-1.compute.amazonaws.com',
-  database: 'dbmf7fllohl6qj',
-  password: '5afb53089a1fcc88f56c18b466b333deb340beddba9a8b085b5be031005bd7c3',
-  port: 5432,
+  user: process.env.USERNAME,
+  host: process.env.HOST,
+  database: process.env.DATABASE,
+  password: process.env.PASSWORD,
+  port: process.env.PORT,
   ssl: {
     rejectUnauthorized: false
   }

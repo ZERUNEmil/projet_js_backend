@@ -1,4 +1,5 @@
 "use strict";
+
 const jwt = require("jsonwebtoken");
 const bcrypt = require('bcrypt');
 const { parse, serialize } = require("../utils/json");
@@ -10,61 +11,7 @@ const jsonDbPath = __dirname + "/../data/users.json";
 
 const saltRounds = 10;
 
-// Defaults data
-const defaultItems = [
-  {
-    id: 1,
-    username: "Estelle",
-    userlastname: "CROQUET",
-    password: "$2b$10$RqcgWQT/Irt9MQC8UfHmjuGCrQkQNeNcU6UtZURdSB/fyt6bMWARa",
-    email: "estelle.croquet@student.vinci.be",
-    address: "",
-    actual_balance: 10000,
-    shadow_balance: 0,
-    nbr_sale: 10,
-    nbr_purchases: 1,
-    profil_picture: "user.jpg",
-  },
-  {
-    id: 2,
-    username: "Ciara",
-    userlastname: "VANMUYSEWINKEL",
-    password: "$2b$10$RqcgWQT/Irt9MQC8UfHmjuGCrQkQNeNcU6UtZURdSB/fyt6bMWARa",
-    email: "kieran.vanmuysewinkel@student.vinci.be",
-    address: "",
-    actual_balance: 20000,
-    shadow_balance: 0,
-    nbr_sale: 20,
-    nbr_purchases: 2,
-    profil_picture: "user.jpg",
-  },
-  {
-    id: 3,
-    username: "Maxime",
-    userlastname: "EDWARDS",
-    password: "$2b$10$RqcgWQT/Irt9MQC8UfHmjuGCrQkQNeNcU6UtZURdSB/fyt6bMWARa",
-    email: "maxime.edwards@student.vinci.be",
-    address: "",
-    actual_balance: 30000,
-    shadow_balance: 0,
-    nbr_sale: 30,    
-    nbr_purchases: 3,
-    profil_picture: "user.jpg",
-  },
-  {
-    id: 4,
-    username: "Emil",
-    userlastname: "ZERUN",
-    password: "$2b$10$RqcgWQT/Irt9MQC8UfHmjuGCrQkQNeNcU6UtZURdSB/fyt6bMWARa",
-    email: "emil.zerun@student.vinci.be",
-    address: "",
-    actual_balance: 40000,
-    shadow_balance: 0,
-    nbr_sale: 40,
-    nbr_purchases: 4,
-    profil_picture: "user.jpg",
-  },
-];
+
 // hash default password
 /*
 bcrypt.hash(defaultItems[0].password, saltRounds).then((hashedPassword) => {
@@ -73,19 +20,17 @@ bcrypt.hash(defaultItems[0].password, saltRounds).then((hashedPassword) => {
 });*/
 
 class Users {
-  constructor(dbPath = jsonDbPath, items = defaultItems) {
-    this.jsonDbPath = dbPath;
-    this.defaultItems = items;
+  constructor() {
   }
 
-  getNextId() {
-    const items = parse(this.jsonDbPath, this.defaultItems);
-    let nextId;
-    if (items.length === 0) nextId = 1;
-    else nextId = items[items.length - 1].id + 1;
+  // getNextId() {
+  //   const items = parse(this.jsonDbPath, this.defaultItems);
+  //   let nextId;
+  //   if (items.length === 0) nextId = 1;
+  //   else nextId = items[items.length - 1].id + 1;
 
-    return nextId;
-  }
+  //   return nextId;
+  // }
 
   /**
    * Returns all items
@@ -199,8 +144,18 @@ class Users {
    * be authenticated
    */
 
-  async login(email, password) {
-    const userFound = this.getOneByEmail(email);
+  async login(email, password, pool) {
+    let userFound = null;
+    pool.query('SELECT * FROM project.user', (err, result) => {
+    // pool.query('SELECT * FROM project.user WHERE email = $1 AND password = $2', [email, password], (err, result) =>{
+      if (err) {
+        return console.error('Error executing query ', err.stack);
+      }
+      userFound = result;
+      console.log(userFound);
+    });
+    console.log(userFound);
+
     if (!userFound) return;
     // checked hash of passwords
     const match = await bcrypt.compare(password, userFound.password);

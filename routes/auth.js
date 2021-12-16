@@ -34,7 +34,6 @@ router.post("/signup", async function (req, res, next) {
 });
 
 
-
 /* login a user : POST /auths/login */
 router.post("/login", async function (req, res, next) {
   // Send an error code '400 Bad request' if the body parameters are not valid
@@ -59,6 +58,7 @@ router.post("/login", async function (req, res, next) {
 
   return res.json({ email: authenticatedUser.email });
 });
+
 
 /* Logout a user : POST /auths/logout */
 router.get("/logout", async function (req, res, next) {

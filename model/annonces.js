@@ -121,12 +121,13 @@ class Annonces {
     // create a new object based on the existing item - prior to modification -
     // and the properties requested to be updated (those in the body of the request)
     // use of the spread operator to create a shallow copy and repl
-    const updateditem = { ...items[foundIndex], ...body };
+    const updateditem = {...items[foundIndex], ...body};
     // replace the item found at index : (or use splice)
     items[foundIndex] = updateditem;
 
     serialize(this.jsonDbPath, items);
     return updateditem;
   }
+}
 
-module.exports = { Users };
+module.exports = { Annonces };

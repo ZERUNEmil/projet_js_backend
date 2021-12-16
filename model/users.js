@@ -144,7 +144,7 @@ class Users {
    */
 
   async login(email, password, pool) {
-    const  { rows } = await pool.query('SELECT * FROM project.user WHERE email = ', [email]);
+    const  { rows } = await pool.query('SELECT * FROM project.user WHERE email = $1', [email]);
     const userFound = rows[0];
 
     if (!userFound) return;

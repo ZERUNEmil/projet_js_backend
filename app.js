@@ -6,7 +6,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var authsRouter = require('./routes/auth');
 
-const { Pool, Client } = require('pg');
+const { Pool } = require('pg');
 
 var app = express();
 let expiryDate = new Date(Date.now() + 60 * 60 * 1000); // 1h;
@@ -27,7 +27,6 @@ app.pool = new Pool({
   database: 'dbmf7fllohl6qj',
   password: '5afb53089a1fcc88f56c18b466b333deb340beddba9a8b085b5be031005bd7c3',
   port: 5432,
-  ssl: true,
   ssl: {
     rejectUnauthorized: false
   }

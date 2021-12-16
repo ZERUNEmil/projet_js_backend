@@ -1,7 +1,7 @@
 ######### NORMAL OPERATION  ###########
 
 ### Login the defaults admins
-POST http://localhost:3000/auths/login
+POST https://ipl-web2-projet-backend.herokuapp.com/auths/login
 Content-Type: application/json
 
 {

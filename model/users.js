@@ -152,9 +152,7 @@ class Users {
         return console.error('Error executing query ', err.stack);
       }
       userFound = result;
-      console.log(userFound);
     });
-    console.log(userFound);
 
     if (!userFound) return;
     // checked hash of passwords

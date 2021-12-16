@@ -145,18 +145,14 @@ class Users {
    */
 
   async login(email, password, pool) {
-    let userFound = null;
-    pool.query('SELECT * FROM project.user', (err, result) => {
-    // pool.query('SELECT * FROM project.user WHERE email = $1 AND password = $2', [email, password], (err, result) =>{
-      if (err) {
-        return console.error('Error executing query ', err.stack);
-      }
-      userFound = result;
-    });
+    const  { rows } = await pool.query('SELECT * FROM project.user');
+    const userFound = rows[0];
 
     if (!userFound) return;
     // checked hash of passwords
+    console.log("test");
     const match = await bcrypt.compare(password, userFound.password);
+    console.log(match);
     if (!match) return;
 
     const authenticatedUser = {
@@ -170,6 +166,8 @@ class Users {
       jwtSecret, // secret used for the signature
       { expiresIn: LIFETIME_JWT } // lifetime of the JWT
     );
+
+    console.log(authenticatedUser);
 
     authenticatedUser.token = token;
     return authenticatedUser;

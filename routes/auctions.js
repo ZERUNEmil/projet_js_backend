@@ -32,7 +32,7 @@ router.get('/:idAuction', async function (req, res) {
 })
 
 /* ADD ONE */
-router.put('/addAuction', async function (req, res) {
+router.put('/:email/addAuction', async function (req, res) {
     // Send an error code '400 Bad request' if the body parameters are not valid
 
     // TODO faut récup l'id de l'utilisateur -> id owner
@@ -48,7 +48,9 @@ router.put('/addAuction', async function (req, res) {
     )
         return res.status(400).end();
 
-    const auction = await auctionModel.addAuction(req.body, req.app.pool);
+    const auction = await auctionModel.addAuction(req.params.email, req.body, req.app.pool);
+
+    if (!auction) return res.json({});
 
     return res.json({
         id_auction: auction.id_auction,
@@ -62,3 +64,5 @@ router.put('/addAuction', async function (req, res) {
         cover_photo: auction.cover_photo,
     });
 });
+
+module.exports = router;

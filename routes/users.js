@@ -49,4 +49,20 @@ router.put('/:email/updateProfil', async function(req, res){
   }
 });
 
+router.put('/:email/updatePassword', async function(req, res){
+  if(
+    !req.body ||
+    (req.body.hasOwnProperty("password") && req.body.password.length === 0)
+  )
+    return res.status(400).end;
+
+  try {
+    let user = await userModel.updatePassword(req.params.email, req.body.password, req.app.pool);
+    if (!user) return res.status(304).end();
+    return res.json(user);
+  }catch (error){
+    return res.status(420).end();
+  }
+})
+
 module.exports = router;

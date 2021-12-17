@@ -119,6 +119,20 @@ class Users {
     }
   }
 
+  async updatePassword(email, password, pool){
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    console.log(hashedPassword);
+    try {
+      const { rows } = await pool.query('UPDATE project.user SET password = $1 WHERE email = $2 RETURNING *', [hashedPassword, email]);
+
+      if (! rows[0]) return;
+
+      return rows[0];
+    } catch (error){
+      throw new Error(error);
+    }
+  }
+
   /**
    * Authenticate a user and generate a token if the user credentials are OK
    * @param {*} email

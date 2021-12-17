@@ -117,7 +117,6 @@ class Users {
   async updateProfil(email, body, pool) {
     try {
       const { rows } = await pool.query('UPDATE project.user SET email = $1, firstname = $2, lastname = $3 WHERE email = $4 RETURNING *', [body.email, body.firstname, body.lastname, email]);
-
       if (! rows[0]) return;
 
       return rows[0];

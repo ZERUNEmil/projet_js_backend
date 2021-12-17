@@ -41,6 +41,7 @@ router.put('/:email/updateProfil', async function(req, res){
 
   try {
     let user = await userModel.updateProfil(req.params.email, req.body, req.app.pool);
+    console.log(user);
     if (!user) return res.status(304).end();
     return res.json(user);
   }catch (error){

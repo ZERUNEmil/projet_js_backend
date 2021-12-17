@@ -47,6 +47,13 @@ class Users {
     return rows[0];
   }
 
+  async getId(email, pool) {
+    const  { rows } = await pool.query('SELECT id_user FROM project.user WHERE email = $1', [email]);
+    if (! rows) return;
+    
+    return rows[0];
+  }
+
   /**
    * Returns the item identified by email
    * @param {string} email - email of the item to find
@@ -121,7 +128,6 @@ class Users {
 
   async updatePassword(email, password, pool){
     const hashedPassword = await bcrypt.hash(password, saltRounds);
-    console.log(hashedPassword);
     try {
       const { rows } = await pool.query('UPDATE project.user SET password = $1 WHERE email = $2 RETURNING *', [hashedPassword, email]);
 
@@ -133,6 +139,52 @@ class Users {
     }
   }
 
+  async addCredits(email, credits, pool){
+    try {
+      const { rows } = await pool.query('UPDATE project.user SET effective_balance = effective_balance + $1 WHERE email = $2 RETURNING *', [credits, email]);
+
+      if (! rows[0]) return;
+
+      return rows[0];
+    } catch (error){
+      throw new Error(error);
+    }
+  }
+
+  async getAdress(email, pool){
+    const  { rows } = await pool.query('SELECT * FROM project.user us, project.adress ad WHERE us.email = $1 AND us.id_user = ad.id_user', [email]);
+    if (! rows) return;
+    
+    return rows[0];
+  }
+
+  async setAdress(email, body, pool){
+    const user_id = await this.getId(email, pool);
+    try {
+      const { rows } = await pool.query('INSERT INTO project.adress VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *', [user_id.id_user, body.street, body.number, body.box, body.city, body.postalCode, body.country]);
+      
+      if (! rows[0]) return;
+
+      return rows[0];
+    } catch (error){
+      throw new Error(error);
+    }
+  }
+
+  async updateAdress(email, body, pool){
+    const user_id = await this.getId(email, pool);
+    try {
+      const { rows } = await pool.query('UPDATE project.adress SET street = $1, number = $2, box = $3, city =  $4, postal_code = $5, country = $6 WHERE id_user = $7 RETURNING *', [body.street, body.number, body.box, body.city, body.postalCode, body.country, user_id.id_user]);
+      console.log(rows);
+      if (! rows[0]) return;
+
+      return rows[0];
+    } catch (error){
+      throw new Error(error);
+    }
+  }
+
+
   /**
    * Authenticate a user and generate a token if the user credentials are OK
    * @param {*} email
@@ -140,7 +192,6 @@ class Users {
    * @returns {Promise} Promise reprensents the authenticatedUser ({email:..., token:....}) or undefined if the user could not
    * be authenticated
    */
-
   async login(email, password, pool) {
     const  { rows } = await pool.query('SELECT * FROM project.user WHERE email = $1', [email]);
     const userFound = rows[0];
@@ -178,7 +229,6 @@ class Users {
    * @returns the new authenticated user ({email:..., token:....}) or undefined if the user could not
    * be created (if email already in use)
    */
-
    signup(username, userlastname, password, email, address) {
     const userFound = this.getOneByEmail(email);
     if (userFound) return;

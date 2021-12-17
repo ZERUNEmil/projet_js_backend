@@ -11,8 +11,7 @@ router.get('/', function(req, res, next) {
 router.get('/:email', async function(req, res){  
   // Send an error code '400 Bad request' if the body parameters are not valid
   if (
-    !req.body ||
-    (req.body.hasOwnProperty("email") && req.body.email.length === 0)
+    !req.body
   )
     return res.status(400).end();
 
@@ -64,5 +63,97 @@ router.put('/:email/updatePassword', async function(req, res){
     return res.status(420).end();
   }
 })
+
+router.put('/:email/addCredits', async function(req, res){
+  if(
+    !req.body ||
+    (req.body.hasOwnProperty("credits") && req.body.credits.length === 0)
+  )
+    return res.status(400).end;
+
+  try {
+    let user = await userModel.addCredits(req.params.email, req.body.credits, req.app.pool);
+    if (!user) return res.status(304).end();
+    return res.json(user);
+  }catch (error){
+    return res.status(420).end();
+  }
+})
+
+router.get('/:email/getAdress', async function(req, res){  
+  // Send an error code '400 Bad request' if the body parameters are not valid
+  if (
+    !req.body
+  )
+    return res.status(400).end();
+
+  const adress = await userModel.getAdress(req.params.email, req.app.pool);
+
+  if (! adress){
+    return res.json({});
+  }
+
+
+  return res.json({street: adress.street,
+      number: adress.number,
+      box: adress.box,
+      city: adress.city,
+      postalCode: adress.postal_code,
+      country: adress.country});
+});
+
+router.put('/:email/setAdress', async function(req, res){  
+  // Send an error code '400 Bad request' if the body parameters are not valid
+  if (
+    !req.body ||
+    (req.body.hasOwnProperty("number") && req.body.number.length === 0) ||
+    (req.body.hasOwnProperty("street") && req.body.street.length === 0) ||
+    (req.body.hasOwnProperty("city") && req.body.city.length === 0) ||
+    (req.body.hasOwnProperty("postalCode") && req.body.postalCode.length === 0) ||
+    (req.body.hasOwnProperty("country") && req.body.country.length === 0)
+  )
+    return res.status(400).end();
+
+  const adress = await userModel.setAdress(req.params.email, req.body, req.app.pool);
+
+  if (! adress){
+    return res.json({});
+  }
+
+
+  return res.json({street: adress.street,
+      number: adress.number,
+      box: adress.box,
+      city: adress.city,
+      postalCode: adress.postal_code,
+      country: adress.country});
+});
+
+router.put('/:email/updateAdress', async function(req, res){  
+  // Send an error code '400 Bad request' if the body parameters are not valid
+  if (
+    !req.body ||
+    (req.body.hasOwnProperty("number") && req.body.number.length === 0) ||
+    (req.body.hasOwnProperty("street") && req.body.street.length === 0) ||
+    (req.body.hasOwnProperty("city") && req.body.city.length === 0) ||
+    (req.body.hasOwnProperty("postalCode") && req.body.postalCode.length === 0) ||
+    (req.body.hasOwnProperty("country") && req.body.country.length === 0)
+  )
+    return res.status(400).end();
+
+  const adress = await userModel.updateAdress(req.params.email, req.body, req.app.pool);
+
+  if (! adress){
+    return res.json({});
+  }
+
+
+  return res.json({street: adress.street,
+      number: adress.number,
+      box: adress.box,
+      city: adress.city,
+      postalCode: adress.postal_code,
+      country: adress.country});
+});
 
 module.exports = router;

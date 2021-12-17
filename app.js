@@ -7,6 +7,7 @@ require("dotenv").config();
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var authsRouter = require('./routes/auth');
+var auctionRouter = require('./routes/auctions')
 
 const { Pool } = require('pg');
 

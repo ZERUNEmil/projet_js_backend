@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require('bcrypt');
 const { parse, serialize } = require("../utils/json");
 const res = require("express/lib/response");
+const { user } = require("pg/lib/defaults");
 //var escape = require("escape-html");
 const jwtSecret = "lux";
 const LIFETIME_JWT = 24 * 60 * 60 * 1000; // in ms : 24 * 60 * 60 * 1000 = 24h
@@ -140,7 +141,7 @@ class Users {
 
   async addCredits(email, credits, pool){
     try {
-      const { rows } = await pool.query('UPDATE project.user SET effective_balance = effective_balance + $1 WHERE email = $2 RETURNING *', [credits, email]);
+      const { rows } = await pool.query('UPDATE project.user SET effective_balance = effective_balance + $1, shadow_balance = shadow_balance + $1 WHERE email = $2 RETURNING *', [credits, email]);
 
       if (! rows[0]) return;
 
@@ -155,6 +156,26 @@ class Users {
     if (! rows) return;
     
     return rows[0];
+  }
+
+  async getAuctionBids(email, pool){
+    const userId = await this.getId(email, pool);
+
+    const  { rows } = await pool.query('SELECT au.name AS "Nom de l\'enchère", au.id_auction, MAX(bi.time) AS "Date", MAX(bi.price) AS "Votre enchère max", topBi.price AS "Enchère max", us.lastname AS "Enchérisseur", us.email,  topBi.sold AS "Statut" FROM project.auction au, project.bids bi, project.bids topBi, project.user us WHERE bi.id_user = $1 AND au.id_auction = bi.id_auction AND topBi.id_auction = au.id_auction AND us.id_user = topBi.id_user AND topBi.price IN (SELECT MAX(bi2.price) FROM project.bids bi2 WHERE bi2.id_auction = au.id_auction GROUP BY bi2.id_auction ) GROUP BY au.name, au.id_auction, topBi.price, us.lastname, us.email, topBi.sold ORDER BY MAX(bi.time) DESC', [userId.id_user]);
+
+    if (! rows) return;
+    
+    return rows;
+  }
+
+  async getAuctions(email, pool){
+    const userId = await this.getId(email, pool);
+
+    const  { rows } = await pool.query('SELECT au.name AS "Annonce", au.id_auction, au.description AS "Description", bi.price AS "Prix actuel", au.status AS "Statut", au.day_duration, au.start_time FROM project.auction au, project.bids bi WHERE owner = $1 AND au.id_auction = bi.id_auction AND bi.price IN (SELECT MAX(bi2.price) FROM project.bids bi2 WHERE bi2.id_auction = au.id_auction GROUP BY bi2.id_auction )', [userId.id_user]);
+
+    if (! rows) return;
+    
+    return rows;
   }
 
   async setAdress(email, body, pool){

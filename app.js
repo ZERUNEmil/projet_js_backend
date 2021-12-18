@@ -7,7 +7,8 @@ require("dotenv").config();
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var authsRouter = require('./routes/auth');
-var auctionRouter = require('./routes/auctions')
+var auctionsRouter = require('./routes/auctions');
+var piecesRouter = require('./routes/pieces');
 
 const { Pool } = require('pg');
 
@@ -44,6 +45,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/auths', authsRouter);
+app.use('/auctions', auctionsRouter);
+app.use('/pieces', piecesRouter);
 
 module.exports = app;
 

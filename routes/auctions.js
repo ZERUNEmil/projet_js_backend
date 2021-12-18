@@ -19,16 +19,7 @@ router.get('/:idAuction', async function (req, res) {
 
     const auction = await auctionModel.getOne(req.params.idAuction, req.app.pool);
 
-    return res.json({
-        name: auction.name,
-        description: auction.description,
-        star_price: auction.star_price,
-        day_duration: auction.day_duration,
-        start_time: auction.start_time,
-        status: auction.status,
-        owner: auction.owner,
-        cover_photo: auction.cover_photo,
-    });
+    return res.json(auction);
 })
 
 /* ADD ONE */
@@ -45,17 +36,7 @@ router.put('/:email/addAuction', async function (req, res) {
 
     if (!auction) return res.json({});
 
-    return res.json({
-        id_auction: auction.id_auction,
-        name: auction.name,
-        description: auction.description,
-        star_price: auction.star_price,
-        day_duration: auction.day_duration,
-        start_time: auction.start_time,
-        status: auction.status,
-        owner: auction.owner,
-        cover_photo: auction.cover_photo,
-    });
+    return res.json(auction);
 });
 
 module.exports = router;

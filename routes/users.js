@@ -157,4 +157,20 @@ router.put('/:email/updateAdress', async function(req, res){
       country: adress.country});
 });
 
+router.get('/:email/getAuctionBids', async function(req, res){  
+  // Send an error code '400 Bad request' if the body parameters are not valid
+  if (
+    !req.body
+  )
+    return res.status(400).end();
+
+  const auctionBids = await userModel.getAuctionBids(req.params.email, req.app.pool);
+
+  if (! auctionBids){
+    return res.json({});
+  }
+
+  return res.json(auctionBids);
+});
+
 module.exports = router;

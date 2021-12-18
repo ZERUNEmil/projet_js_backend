@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require('bcrypt');
 const { parse, serialize } = require("../utils/json");
 const res = require("express/lib/response");
+const { user } = require("pg/lib/defaults");
 //var escape = require("escape-html");
 const jwtSecret = "lux";
 const LIFETIME_JWT = 24 * 60 * 60 * 1000; // in ms : 24 * 60 * 60 * 1000 = 24h
@@ -155,6 +156,16 @@ class Users {
     if (! rows) return;
     
     return rows[0];
+  }
+
+  async getAuctionBids(email, pool){
+    const userId = await this.getId(email, pool);
+
+    const  { rows } = await pool.query('SELECT au.name AS "Nom de l\'enchère", bi.time AS "Date", bi.price AS "Montant", topBi.price AS "Enchère max", us.lastname AS "Enchérisseur", us.id_user,  topBi.sold FROM project.auction au, project.bids bi, project.bids topBi, project.user us WHERE bi.id_user = $1 AND au.id_auction = bi.id_auction AND topBi.id_auction = au.id_auction AND us.id_user = topBi.id_user AND topBi.price IN (SELECT MAX(bi2.price) FROM project.bids bi2 WHERE bi2.id_auction = au.id_auction GROUP BY bi2.id_auction ) ORDER BY bi.time DESC', [userId.id_user]);
+
+    if (! rows) return;
+    
+    return rows;
   }
 
   async setAdress(email, body, pool){

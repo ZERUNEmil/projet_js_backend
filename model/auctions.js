@@ -48,10 +48,11 @@ class Auctions {
      */
     async addAuction(email, body, pool) {
         const user_id = await this.getOwnerId(email, pool);
+
         try {
             const {rows} = await pool.query(
                 'INSERT INTO project.auction (name, description, start_price, day_duration, start_time, owner, cover_photo) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
-                [body.auctionName, body.auctionDescription, body.start_price, body.day_duration, body.start_time, user_id.id_user]);
+                [body.name, body.description, body.start_price, body.day_duration, body.start_time, user_id.id_user, body.cover_photo]);
 
             if (!rows[0]) return;
 

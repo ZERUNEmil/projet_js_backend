@@ -35,16 +35,9 @@ router.get('/:idAuction', async function (req, res) {
 router.put('/:email/addAuction', async function (req, res) {
     // Send an error code '400 Bad request' if the body parameters are not valid
 
-    // TODO faut récup l'id de l'utilisateur -> id owner
-
     if (
         !req.body ||
-        (req.body.hasOwnProperty("name") && req.body.name.length === 0) ||
-        (req.body.hasOwnProperty("description") && req.body.description.length === 0) ||
-        (req.body.hasOwnProperty("start_price") && req.body.start_price.length === 0) ||
-        (req.body.hasOwnProperty("day_duration") && req.body.day_duration.length === 0) ||
-        (req.body.hasOwnProperty("start_time") && req.body.start_time.length === 0) ||
-        (req.body.hasOwnProperty("cover_photo") && req.body.cover_photo.length === 0)
+        (req.body.hasOwnProperty("name") && req.body.name.length === 0)
     )
         return res.status(400).end();
 

@@ -8,6 +8,18 @@ router.get('/', function (req, res, next) {
     res.send('respond with a resource');
 });
 
+/* GET active auctions listing. */
+router.get('/allAuctions', async function (req, res, next) {
+    if (
+        !req.body ||
+        (req.body.hasOwnProperty("idAuction") && req.body.idAuction.length === 0)
+        // Vient des paramètre envoyés en json par le frontend
+    )
+        return res.status(404).end();
+
+    const auction = await auctionModel.getAllActive(req.app.pool);
+});
+
 /* GET ONE */
 router.get('/:idAuction', async function (req, res) {
     if (
@@ -22,7 +34,7 @@ router.get('/:idAuction', async function (req, res) {
     return res.json({
         name: auction.name,
         description: auction.description,
-        star_price: auction.star_price,
+        start_price: auction.start_price,
         day_duration: auction.day_duration,
         start_time: auction.start_time,
         status: auction.status,

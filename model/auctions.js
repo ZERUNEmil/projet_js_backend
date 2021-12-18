@@ -15,6 +15,17 @@ class Auctions {
         return rows;
     }
 
+/**
+     * Returns all active items
+     * @returns {Array} Array of items
+     */
+ async getAllActive(pool) {
+    const  { rows } = await pool.query('SELECT * FROM project.auction WHERE status = "In Progress"');
+    if (! rows) return;
+
+    return rows;
+}
+
     /**
      * Returns the item identified by id
      * @param {number} id - id of the item to find

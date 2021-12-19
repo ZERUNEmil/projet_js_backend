@@ -61,6 +61,21 @@ router.put('/:id/updatePiece', async function(req, res){
     }
 
     return res.json(piece);
+});/* UPDATE ONE */
+router.put('/:id/postPiece', async function(req, res){
+    // Send an error code '400 Bad request' if the body parameters are not valid
+    if (
+        !req.body
+    )
+        return res.status(400).end();
+
+    const piece = await pieceModel.updatePiece(req.params.id, req.body, req.app.pool);
+
+    if (! piece){
+        return res.json({});
+    }
+
+    return res.json(piece);
 });
 
 module.exports = router;

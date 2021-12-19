@@ -129,6 +129,25 @@ class Auctions {
         }
     }
 
+    /**
+     * Post a item in the DB and return the updated item
+     * @param {number} id - id of the item to be updated
+     * @param {object} body - it contains all the data to be updated
+     * @returns {object} the updated item or undefined if the update operation failed
+     */
+    async postAuction(id, body, pool) {
+        try {
+            const { rows } = await pool.query('UPDATE project.auction SET name = $1, description = $2, start_price = $3, day_duration = $4, start_time = $5, status = $6, cover_photo = $7 WHERE id_auction = $8 RETURNING *',
+                [body.name, body.description, body.start_price, body.day_duration, body.start_time, body.status, body.cover_photo, id]);
+
+            if (! rows[0]) return;
+
+            return rows[0];
+        } catch (error){
+            throw new Error(error);
+        }
+    }
+
 }
 
 module.exports = {Auctions};

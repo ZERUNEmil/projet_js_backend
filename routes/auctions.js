@@ -107,4 +107,19 @@ router.put('/:id/updateAuction', async function(req, res){
     return res.json(auction);
 });
 
+/* POST ONE */
+router.put('/:id/postAuction', async function(req, res){
+    // Send an error code '400 Bad request' if the body parameters are not valid
+    if (
+        !req.body
+    )
+        return res.status(400).end();
+
+    const auction = await auctionModel.postAuction(req.params.id, req.body, req.app.pool);
+
+    if (! auction) return res.json({});
+
+    return res.json(auction);
+});
+
 module.exports = router;

@@ -53,8 +53,8 @@ router.get('/recentAuctions', async function (req, res, next) {
 /* GET ONE */
 router.get('/:idAuction', async function (req, res) {
     if (
-        !req.body ||
-        (req.body.hasOwnProperty("idAuction") && req.body.idAuction.length === 0)
+        !req.params ||
+        (req.params.hasOwnProperty("idAuction") && req.params.idAuction.length === 0)
         // Vient des paramètre envoyés en json par le frontend
     )
         return res.status(404).end();
@@ -77,6 +77,34 @@ router.put('/:email/addAuction', async function (req, res) {
     const auction = await auctionModel.addAuction(req.params.email, req.body, req.app.pool);
 
     if (!auction) return res.json({});
+
+    return res.json(auction);
+});
+
+/* DELETE ONE */
+router.delete('/:id/deleteAuction', async function (req, res) {
+
+    const auction = await auctionModel.deleteOne(req.params.id, req.app.pool);
+
+    if (! auction) return res.json({});
+
+    return res.json(auction);
+})
+
+/* UPDATE ONE */
+router.put('/:id/updateAuction', async function(req, res){
+    // Send an error code '400 Bad request' if the body parameters are not valid
+    if (
+        !req.body ||
+        (req.body.hasOwnProperty("name") && req.body.name.length === 0)
+    )
+        return res.status(400).end();
+
+    console.log(req.body);
+
+    const auction = await auctionModel.updateAuction(req.params.id, req.body, req.app.pool);
+
+    if (! auction) return res.json({});
 
     return res.json(auction);
 });

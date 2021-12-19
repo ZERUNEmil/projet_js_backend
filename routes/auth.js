@@ -16,13 +16,7 @@ router.post("/signup", async function (req, res, next) {
   )
     return res.status(400).end();
 
-  const authenticatedUser = await userModel.signup(
-    req.body.username,
-    req.body.userlastname,
-    req.body.password,
-    req.body.email,
-    req.body.address
-  );
+  const authenticatedUser = await userModel.setUser(req.body,req.app.pool);
   // Error code '409 Conflict' if the email already exists
   if (!authenticatedUser) return res.status(409).end();
 
@@ -32,6 +26,7 @@ router.post("/signup", async function (req, res, next) {
 
   return res.json({ email: authenticatedUser.email });
 });
+
 
 
 /* login a user : POST /auths/login */

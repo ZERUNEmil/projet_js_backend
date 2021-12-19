@@ -1,5 +1,12 @@
 "use strict";
 
+const { user } = require("pg/lib/defaults");
+const { all } = require("../routes");
+const {Bids} = require("./bids");
+const bidModel = new Bids();
+
+const {Users} = require("./users");
+const userModel = new Users();
 
 class Auctions {
     constructor() {
@@ -26,6 +33,7 @@ class Auctions {
 
     return rows;
 }
+
 /**
      * Returns all top items
      * @returns {Array} Array of items
@@ -126,6 +134,13 @@ class Auctions {
         }
     }
 
+    async soldAuction(id, pool){
+        const  { rows } = await pool.query('UPDATE project.auction SET status = $1 WHERE id_auction = $2 RETURNING owner;', ['Sold', id]);
+        if (! rows) return;
+
+        return rows[0];
+    }
+
     /**
      * Post a item in the DB and return the updated item
      * @param {number} id - id of the item to be updated
@@ -143,6 +158,52 @@ class Auctions {
         } catch (error){
             throw new Error(error);
         }
+    }
+
+    async updateAll(pool){
+
+        // All auctions not finished
+        const auction = await this.getAllActive(pool);
+
+        auction.forEach(async (auction) =>{
+            let date = new Date(auction.start_time);
+            date = date.setDate(date.getDate() + auction.day_duration);
+            const end_date = new Date(date);
+            if (end_date < Date.now()){
+                console.log(auction);
+                const vendor = await this.soldAuction(auction.id_auction, pool);
+
+                const bid = await bidModel.getLastBidAuction(auction.id_auction, pool);
+                const lastBid = bid[0];
+
+                if (lastBid != undefined){
+                    await bidModel.soldBid(lastBid.id_bid, pool);
+    
+                    // débiter achetereur et augmenter achat
+                    await userModel.addCredits(vendor.email, bid.price, pool);
+                    await userModel.addSale(vendor.email, pool);
+    
+                    // rembourser bider
+                    const allBider = await bidModel.getLastBidAuction(auction.id_auction, pool);
+                    const bider = allBider.filter(bider => bider.id_user != lastBid.id_user);
+    
+                    bider.forEach(async (bid) => {
+                        if (bid.user_id != undefined){
+                            const email = await userModel.getEmail(bid.user_id, pool);
+                            await userModel.addShadowBalance(email.email, bid.price, pool);
+                        }
+                    })
+    
+                    // payer vendeur et augmenter vente
+                    const buyer = await userModel.getEmail(lastBid.id_user, pool);
+                    await userModel.addCredits(buyer.email, 0 - lastBid.price, pool);
+                    await userModel.addSale(buyer.email, pool);
+                }
+                
+            }
+        })
+
+        return;
     }
 
 }

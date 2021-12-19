@@ -115,8 +115,8 @@ class Auctions {
      */
     async updateAuction(id, body, pool) {
         try {
-            const { rows } = await pool.query('UPDATE project.auction SET name = $1, description = $2, start_price = $3, day_duration = $4, start_time = $5, cover_photo = $6 WHERE id_auction = $7 RETURNING *',
-                [body.name, body.description, body.start_price, body.day_duration, body.start_time, body.cover_photo, id]);
+            const { rows } = await pool.query('UPDATE project.auction SET name = $1, description = $2, start_price = $3, day_duration = $4, start_time = $5 WHERE id_auction = $6 RETURNING *',
+                [body.name, body.description, body.start_price, body.day_duration, body.start_time, id]);
 
             if (! rows[0]) return;
 
@@ -134,8 +134,8 @@ class Auctions {
      */
     async postAuction(id, body, pool) {
         try {
-            const { rows } = await pool.query('UPDATE project.auction SET name = $1, description = $2, start_price = $3, day_duration = $4, start_time = $5, status = $6, cover_photo = $7 WHERE id_auction = $8 RETURNING *',
-                [body.name, body.description, body.start_price, body.day_duration, body.start_time, body.status, body.cover_photo, id]);
+            const { rows } = await pool.query('UPDATE project.auction SET name = $1, description = $2, start_price = $3, day_duration = $4, start_time = $5, status = $6 WHERE id_auction = $7 RETURNING *',
+                [body.name, body.description, body.start_price, body.day_duration, body.start_time, body.status, id]);
 
             if (! rows[0]) return;
 

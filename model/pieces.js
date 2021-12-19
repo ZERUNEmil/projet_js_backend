@@ -49,22 +49,6 @@ class Pieces {
         }
     }
 
-    async addPicture(id, body, pool) {
-
-        try {
-            const {rows} = await pool.query(
-                'INSERT INTO project.piece_picture (name, link, html_label, id_piece) VALUES ($1, $2, $3, $4) RETURNING *',
-                [body.name, body.picture, body.label, id]);
-
-            if (!rows[0]) return;
-
-            return rows[0];
-
-        } catch (error) {
-            throw new Error(error);
-        }
-    }
-
     /**
      * Delete a item in the DB and return the deleted item
      * @param {number} id - id of the item to be deleted

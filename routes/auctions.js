@@ -70,7 +70,8 @@ router.put('/:email/addAuction', async function (req, res) {
 
     if (
         !req.body ||
-        (req.body.hasOwnProperty("name") && req.body.name.length === 0)
+        (req.body.hasOwnProperty("name") && req.body.name.length === 0) ||
+        (req.body.hasOwnProperty("cover_photo") && req.body.cover_photo.length === 0)
     )
         return res.status(400).end();
 

@@ -58,8 +58,6 @@ router.put('/:id/updateAuction', async function(req, res){
     )
         return res.status(400).end();
 
-    console.log(req.body);
-
     const auction = await auctionModel.updateAuction(req.params.id, req.body, req.app.pool);
 
     if (! auction) return res.json({});

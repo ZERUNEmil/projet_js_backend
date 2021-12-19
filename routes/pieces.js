@@ -47,14 +47,12 @@ router.delete('/:id/deletePiece', async function (req, res) {
 })
 
 /* UPDATE ONE */
-router.put('/:id/updateAuction', async function(req, res){
+router.put('/:id/updatePiece', async function(req, res){
     // Send an error code '400 Bad request' if the body parameters are not valid
     if (
         !req.body
     )
         return res.status(400).end();
-
-    console.log(req.body);
 
     const piece = await pieceModel.updatePiece(req.params.id, req.body, req.app.pool);
 
@@ -62,7 +60,7 @@ router.put('/:id/updateAuction', async function(req, res){
         return res.json({});
     }
 
-    return res.json(auction);
+    return res.json(piece);
 });
 
 module.exports = router;

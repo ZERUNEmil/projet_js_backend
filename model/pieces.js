@@ -69,7 +69,7 @@ class Pieces {
      */
     async updatePiece(id, body, pool) {
         try {
-            const { rows } = await pool.query('UPDATE project.user SET name = $1, description = $2, artists = $3, signed = $4, partner = $5, collection = $6, type = $7, size = $8, art_movement = $9, location = $10, date = $11 WHERE id_auction = $12 RETURNING *',
+            const { rows } = await pool.query('UPDATE project.piece SET name = $1, description = $2, artists = $3, signed = $4, partner = $5, collection = $6, type = $7, size = $8, art_movement = $9, location = $10, date = $11 WHERE id_auction = $12 RETURNING *',
                 [body.name, body.description, body.artist, body.signed, body.partner, body.collection, body.type, body.size, body.art_movement, body.location, body.date, id]);
 
             if (! rows[0]) return;

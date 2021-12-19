@@ -83,8 +83,9 @@ class Auctions {
      */
     async updateAuction(id, body, pool) {
         try {
-            const { rows } = await pool.query('UPDATE project.user SET email = $1, firstname = $2, lastname = $3 WHERE email = $4 RETURNING *',
-                [body.email, body.firstname, body.lastname, email]);
+            const { rows } = await pool.query('UPDATE project.auction SET name = $1, description = $2, start_price = $3, day_duration = $4, start_time = $5, cover_photo = $6 WHERE id_auction = $7 RETURNING *',
+                [body.name, body.description, body.start_price, body.day_duration, body.start_time, body.cover_photo, id]);
+
             if (! rows[0]) return;
 
             return rows[0];

@@ -22,7 +22,7 @@ class Pieces {
      * @returns {object} the item found or undefined if the id does not lead to a item
      */
     async getOne(id, pool) {
-        const {rows} = await pool.query('SELECT * FROM project.piece WHERE id_piece = $1', [id]);
+        const {rows} = await pool.query('SELECT * FROM project.piece WHERE id_auction = $1', [id]);
         if (!rows) return;
 
         return rows[0];

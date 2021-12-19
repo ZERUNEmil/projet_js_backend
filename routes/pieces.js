@@ -11,15 +11,15 @@ router.get('/', function (req, res, next) {
 });
 
 /* GET ONE */
-router.get('/:idPiece', async function (req, res) {
+router.get('/:idAuction', async function (req, res) {
     if (
-        !req.body ||
-        (req.body.hasOwnProperty("idAuction") && req.body.idPiece.length === 0)
+        !req.params ||
+        (req.params.hasOwnProperty("idAuction") && req.params.idAuction.length === 0)
         // Vient des paramètre envoyés en json par le frontend
     )
         return res.status(404).end();
 
-    const piece = await pieceModel.getOne(req.params.idPiece, req.app.pool);
+    const piece = await pieceModel.getOne(req.params.idAuction, req.app.pool);
 
     return res.json(piece);
 })
@@ -53,6 +53,8 @@ router.put('/:id/updateAuction', async function(req, res){
         !req.body
     )
         return res.status(400).end();
+
+    console.log(req.body);
 
     const piece = await pieceModel.updatePiece(req.params.id, req.body, req.app.pool);
 

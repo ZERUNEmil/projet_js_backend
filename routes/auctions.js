@@ -11,8 +11,8 @@ router.get('/', function (req, res, next) {
 /* GET ONE */
 router.get('/:idAuction', async function (req, res) {
     if (
-        !req.body ||
-        (req.body.hasOwnProperty("idAuction") && req.body.idAuction.length === 0)
+        !req.params ||
+        (req.params.hasOwnProperty("idAuction") && req.params.idAuction.length === 0)
         // Vient des paramètre envoyés en json par le frontend
     )
         return res.status(404).end();
@@ -57,6 +57,8 @@ router.put('/:id/updateAuction', async function(req, res){
         (req.body.hasOwnProperty("name") && req.body.name.length === 0)
     )
         return res.status(400).end();
+
+    console.log(req.body);
 
     const auction = await auctionModel.updateAuction(req.params.id, req.body, req.app.pool);
 

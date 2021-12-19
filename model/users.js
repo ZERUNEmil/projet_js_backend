@@ -1,11 +1,17 @@
 "use strict";
 
+/*************************************************************************************** 
+*    Title: <js-demos> 
+*    Author: <Raphaël Baron> 
+*    Date: <10/12/2021> 
+*    Availability: <https://github.com/e-vinci/js-demos > 
+* 
+***************************************************************************************/ 
+
 const jwt = require("jsonwebtoken");
 const bcrypt = require('bcrypt');
-const { parse, serialize } = require("../utils/json");
 const res = require("express/lib/response");
 const { user } = require("pg/lib/defaults");
-//var escape = require("escape-html");
 const jwtSecret = "lux";
 const LIFETIME_JWT = 24 * 60 * 60 * 1000; // in ms : 24 * 60 * 60 * 1000 = 24h
 
@@ -68,17 +74,6 @@ class Users {
   }
 
  
-  /**
-   * Delete a item in the DB and return the deleted item
-   * @param {number} id - id of the item to be deleted
-   * @returns {object} the item that was deleted or undefined if the delete operation failed
-   */
-  async DeleteOne(id, pool) {
-    const  { rows } = await pool.query('DELETE FROM project.user WHERE id_user = $1', [id]);
-    if (! rows) return;
-    
-    return rows[0];
-  }
 
   /**
    * Update a item in the DB and return the updated item

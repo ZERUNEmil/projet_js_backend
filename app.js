@@ -9,6 +9,7 @@ var usersRouter = require('./routes/users');
 var authsRouter = require('./routes/auth');
 var auctionsRouter = require('./routes/auctions');
 var piecesRouter = require('./routes/pieces');
+var bidsRouter = require('./routes/bids');
 
 const { Pool } = require('pg');
 
@@ -47,6 +48,7 @@ app.use('/users', usersRouter);
 app.use('/auths', authsRouter);
 app.use('/auctions', auctionsRouter);
 app.use('/pieces', piecesRouter);
+app.use('/bids', bidsRouter);
 
 module.exports = app;
 

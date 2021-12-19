@@ -36,6 +36,16 @@ router.put('/:idAuction/addPiece', async function (req, res) {
     return res.json(piece);
 });
 
+router.put('/:idPicture/addPicture', async function (req, res) {
+    if (!req.body) return res.status(404).end();
+
+    const picture = await pieceModel.addPicture(req.params.idPicture, req.body, req.app.pool);
+
+    if (!picture) return res.json({});
+
+    return res.json(picture);
+});
+
 /* DELETE ONE */
 router.delete('/:id/deletePiece', async function (req, res) {
 

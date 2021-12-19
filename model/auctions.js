@@ -62,6 +62,37 @@ class Auctions {
             throw new Error (error);
         }
     }
+
+    /**
+     * Delete a item in the DB and return the deleted item
+     * @param {number} id - id of the item to be deleted
+     * @returns {object} the item that was deleted or undefined if the delete operation failed
+     */
+    async deleteOne(id, pool) {
+        const  { rows } = await pool.query('DELETE FROM project.auction WHERE id_auction = $1', [id]);
+        if (! rows) return;
+
+        return rows[0];
+    }
+
+    /**
+     * Update a item in the DB and return the updated item
+     * @param {number} id - id of the item to be updated
+     * @param {object} body - it contains all the data to be updated
+     * @returns {object} the updated item or undefined if the update operation failed
+     */
+    async updateAuction(id, body, pool) {
+        try {
+            const { rows } = await pool.query('UPDATE project.user SET email = $1, firstname = $2, lastname = $3 WHERE email = $4 RETURNING *',
+                [body.email, body.firstname, body.lastname, email]);
+            if (! rows[0]) return;
+
+            return rows[0];
+        } catch (error){
+            throw new Error(error);
+        }
+    }
+
 }
 
 module.exports = {Auctions};

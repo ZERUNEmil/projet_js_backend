@@ -39,4 +39,30 @@ router.put('/:email/addAuction', async function (req, res) {
     return res.json(auction);
 });
 
+/* DELETE ONE */
+router.delete('/:id/deleteAuction', async function (req, res) {
+
+    const auction = await auctionModel.deleteOne(req.params.id, req.app.pool);
+
+    if (! auction) return res.json({});
+
+    return res.json(auction);
+})
+
+/* UPDATE ONE */
+router.put('/:id/updateAuction', async function(req, res){
+    // Send an error code '400 Bad request' if the body parameters are not valid
+    if (
+        !req.body ||
+        (req.body.hasOwnProperty("name") && req.body.name.length === 0)
+    )
+        return res.status(400).end();
+
+    const auction = await auctionModel.updateAuction(req.params.id, req.body, req.app.pool);
+
+    if (! auction) return res.json({});
+
+    return res.json(auction);
+});
+
 module.exports = router;

@@ -67,36 +67,7 @@ class Users {
     return rows[0];
   }
 
-  /**
-   * Add a item in the DB and returns - as Promise - the added item (containing a new id)
-   * @param {object} body - it contains all required data to create a item
-   * @returns {Promise} Promise reprensents the item that was created (with id)
-   */
-  async addOne(body, pool) {
-    const items = parse(this.jsonDbPath, this.defaultItems);
-
-    // hash the password (async call)
-    const hashedPassword = await bcrypt.hash(body.password, saltRounds);
-    // add new item to the menu
-
-    const newitem = {
-      id: this.getNextId(),
-      username: escape(body.username),
-      userlastname: escape(body.userlastname),
-      password: hashedPassword,
-      email: escape(body.email),
-      address: escape(body.address),
-      actual_balance: 0,
-      shadow_balance: 0,
-      nbr_sale: 0,
-      nbr_purchases: 0,
-      profil_picture: "user.jpg",
-    };
-    items.push(newitem);
-    serialize(this.jsonDbPath, items);
-    return newitem;
-  }
-
+ 
   /**
    * Delete a item in the DB and return the deleted item
    * @param {number} id - id of the item to be deleted
@@ -239,39 +210,41 @@ class Users {
     return authenticatedUser;
   }
 
-  /**
+    /**
    * Create a new user in DB and generate a token
    * @param {*} username
    * @param {*} userlastname
    * @param {*} password
    * @param {*} email
-   * @param {*} address
    * @returns the new authenticated user ({email:..., token:....}) or undefined if the user could not
    * be created (if email already in use)
    */
-   signup(username, userlastname, password, email, address) {
-    const userFound = this.getOneByEmail(email);
-    if (userFound) return;
-
-    const newUser = this.addOne({ username: username, userlastname: userlastname, password: password, 
-    email : email, address: address});
-
-    
-    const authenticatedUser = {
-      email: email,
-      token: "Future signed token",
-    };
-
-    // replace expected token with JWT : create a JWT
-    const token = jwt.sign(
-      { email: authenticatedUser.email }, // session data in the payload
-      jwtSecret, // secret used for the signature
-      { expiresIn: LIFETIME_JWT } // lifetime of the JWT
-    );
-
-    authenticatedUser.token = token;
-    return authenticatedUser;
+     async setUser(body, pool) {
+   
+      const hashedPassword = await bcrypt.hash(body.password, saltRounds);
+  
+      try {
+        const { rows } = await pool.query("INSERT INTO project.user(email, firstname, lastname, password) VALUES ($1, $2, $3, $4) RETURNING * ",  [ body.email , body.username, body.userlastname, hashedPassword]);
+  
+        if (! rows[0]) return;
+  
+          const authenticatedUser = {
+            email: body.email,
+            token: "Future signed token",
+          };
+      
+          const token = jwt.sign(
+            { email: authenticatedUser.email }, jwtSecret,  { expiresIn: LIFETIME_JWT } 
+          );
+      
+          authenticatedUser.token = token;
+          return authenticatedUser;
+  
+  
+      } catch (error){
+        return;
+      }
+    }
   }
-}
 
 module.exports = { Users };

@@ -7,7 +7,6 @@ const bidsModel = new Bids();
 router.get('/', function(req, res, next) {
   res.send('respond with a resource');
 });
-  
 
   router.get('/:id_auction/getBidsByAction', async function(req, res){  
     // Send an error code '400 Bad request' if the body parameters are not valid
@@ -24,10 +23,6 @@ router.get('/', function(req, res, next) {
   
     return res.json(bids);
   });
-
-
-
-
 
 router.put("/:email/:id_auction/addBid", async function (req, res, next) {
   if (

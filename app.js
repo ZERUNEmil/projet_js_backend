@@ -1,6 +1,7 @@
 var express = require('express');
 var logger = require('morgan');
 var cookieSession = require('cookie-session');
+var nodemon = require('nodemon');
 
 require("dotenv").config();
 
@@ -12,6 +13,20 @@ var piecesRouter = require('./routes/pieces');
 var bidsRouter = require('./routes/bids');
 
 const { Pool } = require('pg');
+
+nodemon({
+  script: 'deamon.js',
+  ext: 'js json'
+});
+
+nodemon.on('start', function () {
+  console.log('App has started');
+}).on('quit', function () {
+  console.log('App has quit');
+  process.exit();
+}).on('restart', function (files) {
+  console.log('App restarted due to: ', files);
+});
 
 var app = express();
 let expiryDate = new Date(Date.now() + 60 * 60 * 1000); // 1h;

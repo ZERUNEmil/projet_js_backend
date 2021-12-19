@@ -2,7 +2,6 @@
 
 
 
-
 // hash default password
 /*
 bcrypt.hash(defaultItems[0].password, saltRounds).then((hashedPassword) => {
@@ -51,6 +50,13 @@ class Bids {
     return rows;
   }
 
+  async getLastBidAuction(id_auction, pool){
+    const  { rows } = await pool.query('SELECT bi.id_bid, bi.id_user, bi.price FROM project.bids bi, project.user us WHERE bi.id_auction = $1 AND bi.id_user = us.id_user ORDER BY time DESC', [id_auction]);
+    if (! rows) return;
+    
+    return rows;
+  }
+
   /**
    * Returns the item identified by id
    * @param {number} id - id of the item to find
@@ -80,6 +86,13 @@ class Bids {
     } catch (error) {
         throw new Error (error);
     }
+}
+
+async soldBid(id_bid, pool){
+  const  { rows } = await pool.query('UPDATE  project.bids SET sold = true WHERE id_bid = $1', [id_bid]);
+    if (! rows) return;
+    
+    return rows;
 }
 
 

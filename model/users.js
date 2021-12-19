@@ -54,6 +54,13 @@ class Users {
     return rows[0];
   }
 
+  async getEmail(id, pool) {
+    const  { rows } = await pool.query('SELECT email FROM project.user WHERE id_user = $1', [id]);
+    if (! rows) return;
+    
+    return rows[0];
+  }
+
   async getId(email, pool) {
     const  { rows } = await pool.query('SELECT id_user FROM project.user WHERE email = $1', [email]);
     if (! rows) return;
@@ -115,6 +122,27 @@ class Users {
     } catch (error){
       throw new Error(error);
     }
+  }
+
+  async addSale(email, pool){
+    const  { rows } = await pool.query('UPDATE project.user SET sales_number = sales_number + 1 WHERE email = $1', [email]);
+    if (! rows) return;
+    
+    return rows[0];
+  }
+
+  async addBuy(email, pool){
+    const  { rows } = await pool.query('UPDATE project.user SET purchases_number = purchases_number + 1 WHERE email = $1', [email]);
+    if (! rows) return;
+    
+    return rows[0];
+  }
+
+  async addShadowBalance(email, credit, pool){
+    const  { rows } = await pool.query('UPDATE project.user SET shadow_balance = shadow_balance + $1 WHERE email = $2', [credit, email]);
+    if (! rows) return;
+    
+    return rows[0];
   }
 
   async getAdress(email, pool){

@@ -1,0 +1,10 @@
+######### NORMAL OPERATION  ###########
+
+### Biding   je doit encore le faire
+POST https://ipl-web2-projet-backend.herokuapp.com/bids/ 
+Content-Type: application/json
+
+{
+    "price":"3,52",
+    "time":""
+}

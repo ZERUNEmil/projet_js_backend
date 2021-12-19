@@ -22,7 +22,6 @@ class Auctions {
      */
  async getAllActive(pool) {
     const  { rows } = await pool.query("SELECT * FROM project.auction WHERE status ='Posted' ");
-    console.log(rows);
     if (! rows) return;
 
     return rows;
@@ -33,7 +32,6 @@ class Auctions {
      */
  async getEndingAuctions(pool) {
     const  { rows } = await pool.query("SELECT * FROM project.auction WHERE status ='Posted' AND CURRENT_DATE-(date(start_time)+ day_duration )<=5");
-    console.log(rows);
     if (! rows) return;
 
     return rows;
@@ -45,7 +43,6 @@ class Auctions {
      */
  async getRecentAuctions(pool) {
     const  { rows } = await pool.query("SELECT DISTINCT a.* FROM project.auction a, project.bids b WHERE a.id_auction = b.id_auction AND status ='Posted' AND  CURRENT_DATE-date(b.time)<=7 ");
-    console.log(rows);
     if (! rows) return;
 
     return rows;

@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const { Bids } = require("../model/bids");
-const userModel = new Bids();
+const bidsModel = new Bids();
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -16,7 +16,7 @@ router.get('/', function(req, res, next) {
     )
       return res.status(400).end();
   
-    const bids = await bidsModel.getBidsByAction(req.params.email, req.app.pool);
+    const bids = await bidsModel.getBidsByAction(req.params.id_auction, req.app.pool);
   
     if (! bids){
       return res.json({});
@@ -29,15 +29,14 @@ router.get('/', function(req, res, next) {
 
 
 
-router.put("/:email:id_auction/addBid", async function (req, res, next) {
+router.put("/:email/:id_auction/addBid", async function (req, res, next) {
   if (
     !req.body ||
-    (req.body.hasOwnProperty("time") && req.body.time.length === 0) ||
     (req.body.hasOwnProperty("price") && req.body.price.length === 0)  
   )
     return res.status(400).end();
 
-    const bid = await bidsModel.addBid(req.params.email, req.params.id_auction, req.body, req.app.pool);
+    const bid = await bidsModel.addBid(req.params.email, req.params.id_auction, req.body.price, req.app.pool);
 
     if (!bid) return res.json({});
 

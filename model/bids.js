@@ -45,7 +45,7 @@ class Bids {
    * @returns {object} the item found or undefined if the id does not lead to a item
    */
   async getBidsByAction(id_auction, pool) {
-    const  { rows } = await pool.query('SELECT * FROM project.bids WHERE id_auction = $1', [id_auction]);
+    const  { rows } = await pool.query('SELECT bi.time, bi.price, us.lastname FROM project.bids bi, project.user us WHERE bi.id_auction = $1 AND bi.id_user = us.id_user ORDER BY time DESC', [id_auction]);
     if (! rows) return;
     
     return rows;
@@ -65,17 +65,16 @@ class Bids {
 
 
 
-  async addBid(email, id_auction , body, pool) {
-    const id_user = await this.getId(email, pool);
+  async addBid(email, id_auction , credits, pool) {
 
     try {
+        const user = await pool.query('UPDATE project.user SET shadow_balance = shadow_balance - $1 WHERE email = $2 RETURNING id_user', [credits, email]);
+        const user_id = user.rows[0].id_user;
+
         const { rows } = await pool.query(
-            'INSERT INTO project.bids (time, price, id_user, id_auction) VALUES ($1, $2, $3, $4) RETURNING *',
-            [body.time, body.price, id_user.id_user, id_auction]);
-
-        const { rows2 } = await pool.query('UPDATE project.user SET shadow_balance = shadow_balance - $1 WHERE email = $2 RETURNING *', [credits, email]);
-
-        if (!rows[0] || !rows2[0]) return;
+          'INSERT INTO project.bids (time, price, id_user, id_auction) VALUES (NOW(), $1, $2, $3) RETURNING *',
+          [credits, user_id, id_auction]);
+        if (!rows[0]) return;
 
         return rows[0];
     } catch (error) {
@@ -87,4 +86,4 @@ class Bids {
 
 }
 
-module.exports = { Users };
+module.exports = { Bids };

@@ -16,6 +16,41 @@ class Auctions {
         return rows;
     }
 
+/**
+     * Returns all active items
+     * @returns {Array} Array of items
+     */
+ async getAllActive(pool) {
+    const  { rows } = await pool.query("SELECT * FROM project.auction WHERE status ='Posted' ");
+    console.log(rows);
+    if (! rows) return;
+
+    return rows;
+}
+/**
+     * Returns all top items
+     * @returns {Array} Array of items
+     */
+ async getEndingAuctions(pool) {
+    const  { rows } = await pool.query("SELECT * FROM project.auction WHERE status ='Posted' AND CURRENT_DATE-(date(start_time)+ day_duration )<=5");
+    console.log(rows);
+    if (! rows) return;
+
+    return rows;
+}
+
+/**
+     * Returns all top items
+     * @returns {Array} Array of items
+     */
+ async getRecentAuctions(pool) {
+    const  { rows } = await pool.query("SELECT DISTINCT a.* FROM project.auction a, project.bids b WHERE a.id_auction = b.id_auction AND status ='Posted' AND  CURRENT_DATE-date(b.time)<=7 ");
+    console.log(rows);
+    if (! rows) return;
+
+    return rows;
+}
+
     /**
      * Returns the item identified by id
      * @param {number} id - id of the item to find

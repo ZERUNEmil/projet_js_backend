@@ -8,6 +8,48 @@ router.get('/', function (req, res, next) {
     res.send('respond with a resource');
 });
 
+/* GET active auctions listing. */
+router.get('/allAuctions', async function (req, res, next) {
+    if (
+        !req.body ||
+        (req.body.hasOwnProperty("idAuction") && req.body.idAuction.length === 0)
+        // Vient des paramètre envoyés en json par le frontend
+    )
+        return res.status(404).end();
+
+    const auction = await auctionModel.getAllActive(req.app.pool);
+    
+    return res.json(auction);
+});
+
+/* GET active auctions listing. */
+router.get('/endingAuctions', async function (req, res, next) {
+    if (
+        !req.body ||
+        (req.body.hasOwnProperty("idAuction") && req.body.idAuction.length === 0)
+        // Vient des paramètre envoyés en json par le frontend
+    )
+        return res.status(404).end();
+
+    const auction = await auctionModel.getEndingAuctions(req.app.pool);
+    
+    return res.json(auction);
+});
+
+/* GET active auctions listing. */
+router.get('/recentAuctions', async function (req, res, next) {
+    if (
+        !req.body ||
+        (req.body.hasOwnProperty("idAuction") && req.body.idAuction.length === 0)
+        // Vient des paramètre envoyés en json par le frontend
+    )
+        return res.status(404).end();
+
+    const auction = await auctionModel.getRecentAuctions(req.app.pool);
+    
+    return res.json(auction);
+});
+
 /* GET ONE */
 router.get('/:idAuction', async function (req, res) {
     if (

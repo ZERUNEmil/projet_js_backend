@@ -48,6 +48,54 @@ class Pieces {
             throw new Error(error);
         }
     }
+
+    async addPicture(id, body, pool) {
+
+        try {
+            const {rows} = await pool.query(
+                'INSERT INTO project.piece_picture (name, link, html_label, id_piece) VALUES ($1, $2, $3, $4) RETURNING *',
+                [body.name, body.picture, body.label, id]);
+
+            if (!rows[0]) return;
+
+            return rows[0];
+
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
+
+    /**
+     * Delete a item in the DB and return the deleted item
+     * @param {number} id - id of the item to be deleted
+     * @returns {object} the item that was deleted or undefined if the delete operation failed
+     */
+    async deleteOne(id, pool) {
+        const  { rows } = await pool.query('DELETE FROM project.piece WHERE id_auction = $1', [id]);
+        if (! rows) return;
+
+        return rows[0];
+    }
+
+    /**
+     * Update a item in the DB and return the updated item
+     * @param {number} id - id of the item to be updated
+     * @param {object} body - it contains all the data to be updated
+     * @returns {object} the updated item or undefined if the update operation failed
+     */
+    async updatePiece(id, body, pool) {
+        try {
+            const { rows } = await pool.query('UPDATE project.user SET name = $1, description = $2, artists = $3, signed = $4, partner = $5, collection = $6, type = $7, size = $8, art_movement = $9, location = $10, date = $11 WHERE id_auction = $12 RETURNING *',
+                [body.name, body.description, body.artist, body.signed, body.partner, body.collection, body.type, body.size, body.art_movement, body.location, body.date, id]);
+
+            if (! rows[0]) return;
+
+            return rows[0];
+        } catch (error){
+            throw new Error(error);
+        }
+    }
+
 }
 
 module.exports = {Pieces};

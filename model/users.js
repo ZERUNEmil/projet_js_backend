@@ -170,6 +170,7 @@ class Users {
 
   async getAuctions(email, pool){
     const userId = await this.getId(email, pool);
+    console.log(userId);
 
     const  { rows } = await pool.query('SELECT au.name AS "Annonce", au.id_auction, au.description AS "Description", bi.price AS "Prix actuel", au.status AS "Statut", au.day_duration, au.start_time FROM project.auction au FULL OUTER JOIN project.bids bi ON au.id_auction = bi.id_auction WHERE owner = $1 AND (bi.price IS NULL OR bi.price IN (SELECT MAX(bi2.price) FROM project.bids bi2 WHERE bi2.id_auction = au.id_auction GROUP BY bi2.id_auction ))', [userId.id_user]);
 
